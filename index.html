@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <title>Make A Note</title>
+</head>
+<body>
+                                    <!-- NavBar Start -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+              <label class="navbar-brand" >MakeNote's</label>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                  </li>
+                </ul>
+                <div class="d-flex">
+                  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                  <button class="btn btn-outline-success" type="submit">Search</button>
+                </div>
+              </div>
+            </div>
+          </nav>
+                                        <!-- NavBar  End -->
+    
+                                            <!-- Heading Start -->
+        <div class="container">
+            <h1>Create Your Note</h1>
+                                      <!-- Heading End -->
+                                    <!-- Text Area Start -->
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">Write Your Note Below</label>
+                <textarea class="form-control" id="notes" rows="13" cols="5"></textarea>
+            </div>
+            <button class="btn btn-primary my-3" id="save">Add Note</button>
+            <button class="btn btn-primary mx-3 my-3" id="clear">Clear Note</button>
+            <h3>Your Notes Below</h3>
+            <div class="row"></div>
+        </div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+<script>
+let noteValue=""
+document.getElementById('save').addEventListener('click',save);
+document.getElementById('clear').addEventListener('click',clear);
+let tem=localStorage.getItem('nums')
+if(tem!=undefined){
+    tem=parseInt(tem)+1;
+    for(let i=0;i<tem;i++){
+        var a=localStorage.key(i)
+        if(a!="nums"){
+        var data=JSON.parse(localStorage.getItem(a));
+        setData(data.body,data.title,a);}
+    }
+}
+function updateKey(a,field,newvalue){
+
+}
+function save(){
+    let title=prompt("Enter Title of Note")
+    if(document.getElementById('notes').value!="" && title!=""){    
+        if(localStorage.getItem('nums')==undefined){
+            localStorage.setItem('nums',0)
+        }
+        let num=parseInt(localStorage.getItem('nums'))
+        setData(document.getElementById('notes').value,title,num+1);
+    noteBody={title:title,body:document.getElementById('notes').value}
+    localStorage.setItem('nums',num+1);
+    localStorage.setItem(num+1,JSON.stringify(noteBody));
+}
+    else{
+        alert("Enter Some Text or valid title")}
+    
+}
+function setData(a,b,c){
+        let noteWindow=document.createElement('div');
+        let cen=document.createElement('center');
+        let btn=document.createElement('button');
+        let heading=document.createElement('h3');
+        let note=document.createElement('p');
+        heading.addEventListener('dblclick',editTitle)
+        noteWindow.className="col-5 mx-3"
+        noteWindow.style.border="2px solid black";
+        noteWindow.style.borderRadius="20px";
+        noteWindow.style.margin="5px"
+        cen.appendChild(heading)
+        btn.innerText="Delete Note"
+        heading.className=c
+        note.className=c
+        heading.innerText=b
+        noteWindow.appendChild(cen)
+        noteWindow.appendChild(note);
+        noteWindow.appendChild(btn);
+        btn.addEventListener('click',deleteNote)
+        note.innerText=a
+        btn.className="btn btn-primary my-2 "+c
+        document.querySelector('div.row').appendChild(noteWindow);
+        note.addEventListener('dblclick',edit)
+}
+function clear(){
+    document.getElementById('notes').value=""
+}
+function deleteNote(e){
+    let par=e.target.parentNode
+    localStorage.removeItem(e.target.classList[3])
+    par.remove();
+    localStorage.setItem('nums',localStorage.getItem('nums')-1)
+}
+function edit(e){
+    if(noteValue==""){
+    let child=e.target
+    let inputBox=document.createElement('textarea')
+    inputBox.value=child.innerText;
+    noteValue=child.innerText;
+    inputBox.className=child.className
+    inputBox.setAttribute("rows","8")
+    inputBox.style.borderRadius="20px";
+    inputBox.setAttribute("cols","62")
+    child.replaceWith(inputBox);
+    inputBox.addEventListener('dblclick',saveEdit);
+}
+else{
+    alert("Edit of Other Note in process")
+}
+}
+function saveEdit(e){
+    let child=e.target
+    let conf=confirm("Are Yoyu Sure You Want to Edit It");
+    if(conf){
+    if(child.value==""){child.parentNode.remove()
+    localStorage.removeItem(child.className);
+    }
+    else{
+    let inputBox=document.createElement('p')
+    inputBox.innerText=child.value;
+    inputBox.className=child.className
+    let val=JSON.parse(localStorage.getItem(child.className)).title
+    noteBody=JSON.stringify({title:val,body:child.value})
+    localStorage.setItem(child.className,noteBody);
+    child.replaceWith(inputBox);
+    inputBox.addEventListener('dblclick',edit);
+}
+}
+else{
+    let inputBox=document.createElement('p')
+    inputBox.innerText=noteValue;
+    child.replaceWith(inputBox);
+    inputBox.addEventListener('click',edit);
+}
+noteValue=""
+}
+function editTitle(e){
+    let child=e.target
+    let inputBox=document.createElement('input')
+    inputBox.value=child.innerText;
+    inputBox.className=child.className
+    child.replaceWith(inputBox);
+    inputBox.addEventListener('dblclick',saveEditTitle);   
+}
+function saveEditTitle(e){
+    let child=e.target
+    let inputBox=document.createElement('h3')
+    inputBox.innerText=child.value;
+    inputBox.className=child.className
+    let val=JSON.parse(localStorage.getItem(child.className)).body
+    noteBody=JSON.stringify({title:child.value,body:val})
+    localStorage.setItem(child.className,noteBody);
+    child.replaceWith(inputBox);
+    inputBox.addEventListener('dblclick',editTitle);
+}
+</script>
+</html>
