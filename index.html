@@ -65,7 +65,7 @@ function updateKey(a,field,newvalue){
 }
 function save(){
     let title=prompt("Enter Title of Note")
-    if(document.getElementById('notes').value!="" && title!=""){    
+    if(document.getElementById('notes').value!="" && title!=null){    
         if(localStorage.getItem('nums')==undefined){
             localStorage.setItem('nums',0)
         }
