@@ -60,11 +60,10 @@ if(tem!=undefined){
         setData(data.body,data.title,a);}
     }
 }
-function updateKey(a,field,newvalue){
 
-}
 function save(){
     let title=prompt("Enter Title of Note")
+    console.log(title)
     if(document.getElementById('notes').value!="" && title!=null){    
         if(localStorage.getItem('nums')==undefined){
             localStorage.setItem('nums',0)
