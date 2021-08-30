@@ -22,8 +22,8 @@
                   </li>
                 </ul>
                 <div class="d-flex">
-                  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                  <button class="btn btn-outline-success" type="submit">Search</button>
+                  <input class="form-control me-2" id="searchBox" type="search" placeholder="Search" aria-label="Search">
+                  <button class="btn btn-outline-success" type="button" id="searchBtn">Search</button>
                 </div>
               </div>
             </div>
@@ -50,6 +50,20 @@
 let noteValue=""
 document.getElementById('save').addEventListener('click',save);
 document.getElementById('clear').addEventListener('click',clear);
+document.getElementById('searchBtn').addEventListener('click',filterNotes);
+function filterNotes(){
+    let notes=Array.from(document.getElementsByClassName("col-5 mx-3"))
+    let value=document.getElementById('searchBox').value;
+    for(let note of notes){
+        note=note.getElementsByTagName('p')[0]
+        if(String(note.innerText).includes(value)){
+            note.parentNode.style.display="block"
+        }
+        else{
+            note.parentNode.style.display="none"
+        }
+    }
+}
 let tem=localStorage.getItem('nums')
 if(tem!=undefined){
     tem=parseInt(tem)+1;
@@ -63,7 +77,6 @@ if(tem!=undefined){
 
 function save(){
     let title=prompt("Enter Title of Note")
-    console.log(title)
     if(document.getElementById('notes').value!="" && title!=null){    
         if(localStorage.getItem('nums')==undefined){
             localStorage.setItem('nums',0)
@@ -73,6 +86,7 @@ function save(){
     noteBody={title:title,body:document.getElementById('notes').value}
     localStorage.setItem('nums',num+1);
     localStorage.setItem(num+1,JSON.stringify(noteBody));
+    document.getElementById('notes').value=""
 }
     else{
         alert("Enter Some Text or valid title")}
