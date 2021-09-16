@@ -100,6 +100,7 @@ function setData(a,b,c){
         let note=document.createElement('p');
         heading.addEventListener('dblclick',editTitle)
         noteWindow.className="col-5 mx-3"
+        noteWindow.style.overflow="auto"
         noteWindow.style.border="2px solid black";
         noteWindow.style.borderRadius="20px";
         noteWindow.style.margin="5px"
@@ -107,6 +108,8 @@ function setData(a,b,c){
         btn.innerText="Delete Note"
         heading.className=c
         note.className=c
+        note.style.overflow="auto";
+        note.style.height="200"
         heading.innerText=b
         noteWindow.appendChild(cen)
         noteWindow.appendChild(note);
